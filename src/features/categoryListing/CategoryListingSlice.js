@@ -6,7 +6,7 @@ export const getCategory = createAsyncThunk(
   'category/getCategory',
   async (_, thunkAPI) => {
     try {
-      const res = await axiosInstance.get('/categoryList');
+      const res = await axiosInstance.get('/category');
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -17,24 +17,28 @@ export const getCategory = createAsyncThunk(
 const initialState = {
   category: [],
   status: null,
+  isLoader : false
 };
 
 const categorySlice = createSlice({
   name: 'category',
   initialState,
   reducers: {},
-  extraReducers:{
-    [getCategory.pending]:(state)=>{
-        state.status = 'loading';
-    },
-    [getCategory.fulfilled]:(state,action)=>{
-        state.status ='succeeded';
-        state.category = action.payload;
-    },
-    [getCategory.rejected]:(state,action)=>{
-        state.status = 'failed';
-    }
-  }
+  extraReducers:(builder)=>{
+    builder.addCase(getCategory.pending, state => {
+      state.status = 'pending';
+      state.isLoader = true;
+    }),
+      builder.addCase(getCategory.fulfilled, (state, action) => {
+        state.status = 'fulfilled';
+        state.category=action.payload
+      state.isLoader = false
+      }),
+      builder.addCase(getCategory.rejected, (state, action) => {
+        state.status = 'rejected';
+      state.isLoader = false;
+      });
+  },
 });
 
 export default categorySlice.reducer;

@@ -1,55 +1,67 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch } from 'react-redux';
-import { getSignup } from '../../features/signupSlice/SignupSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getSignup} from '../../features/signupSlice/SignupSlice';
 
-import validator from '../../utils/Validator'
-import { showError } from '../../utils/helperFuntion';
+import validator from '../../utils/Validator';
+import {showError} from '../../utils/helperFuntion';
 const SignupPage = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [errortext, setErrortext] = useState('');
-  const dispatch = useDispatch()
+  const [errortextUser, setErrortextUser] = useState(false);
+  const [errortextEmail, setErrortextEmail] = useState(false);
+  const [errortextPhone, setErrortextPhone] = useState(false);
+  const [errortextPassword, setErrortextPassword] = useState(false);
+  const { isSignup } = useSelector((state) => state.signup);
+  const dispatch = useDispatch();
 
-  const isValidator = ()=>{
+  const isValidator = () => {
     const error = validator({
-      email,password
-    })
-    if(error){
-      showError(error)
-      return
+      email,
+      password,
+    });
+    if (error) {
+      showError(error);
+      return;
     }
-  }
+  };
   const handleSignup = () => {
- 
-   
     if (!name) {
       alert('Please enter your name');
+      setErrortextUser(true)
       return;
     }
     if (!email) {
       alert('Please enter your email');
+      setErrortextEmail(true)
       return;
     }
     if (!password) {
       alert('Please enter your password');
+      setErrortextPassword(true)
       return;
     }
     if (!phone) {
       alert('Please enter your phone number');
+      setErrortextPhone(true)
       return;
     }
-    if(name || email || password || phone) {
-      console.log(name, email, password, phone, 'fdgdfg');
-      dispatch(getSignup({name:name, email:email, password:password, phone:phone}))
+    if (name || email || password || phone) {
+      dispatch(getSignup({name, email, password, phone}))
     }
   };
+
+  // useEffect(()=>{
+  //   if(isSignup){
+  //     navigation.navigate('CategoryListing');
+  //   }
+  // },[isSignup])
   return (
     <>
       <LinearGradient
@@ -82,21 +94,21 @@ const SignupPage = ({navigation}) => {
               style={styles.personIcon}
             />
             <TextInput
-              style={styles.inputField}
+              style={styles.inputFieldUser}
               placeholder="User Name"
               value={name}
               onChangeText={setName}
             />
             <Fontisto name="email" size={30} style={styles.emailIcon} />
             <TextInput
-              style={styles.inputField}
+              style={styles.inputFieldEmail}
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
             />
             <Fontisto name="phone" size={22} style={styles.phoneIcon} />
             <TextInput
-              style={styles.inputField}
+              style={styles.inputFieldPhone}
               placeholder="Phone Number"
               value={phone}
               onChangeText={setPhone}
@@ -107,7 +119,7 @@ const SignupPage = ({navigation}) => {
               style={styles.passwordsIcon}
             />
             <TextInput
-              style={styles.inputField}
+              style={styles.inputFieldPassword}
               placeholder="Password"
               secureTextEntry={true}
               value={password}
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#fff',
   },
-  formContainer: {
+  formContainer: {  
     width: '80%',
     height: 420,
     backgroundColor: '#fff',
@@ -192,7 +204,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  inputField: {
+  inputFieldUser: {
+    width: '100%',
+    height: 50,
+    borderColor: 'grey',
+    borderWidth: 1,   
+    borderRadius: 50,
+    marginBottom: 10,
+    paddingLeft: 45,
+    fontSize: 15,
+    color: 'black',
+  },
+  inputFieldEmail: {
+    width: '100%',
+    height: 50,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 50,
+    marginBottom: 10,
+    paddingLeft: 45,
+    fontSize: 15,
+    color: 'black',
+  },
+  inputFieldPhone: {
+    width: '100%',
+    height: 50,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 50,
+    marginBottom: 10,
+    paddingLeft: 45,
+    fontSize: 15,
+    color: 'black',
+  },
+  inputFieldPassword: {
     width: '100%',
     height: 50,
     borderColor: 'grey',

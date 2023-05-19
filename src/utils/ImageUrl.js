@@ -1,1 +1,1 @@
-export const displayImageUrl=  "https://chapshopbackend.s3.ap-south-1.amazonaws.com/"
+export const displayImageUrl=  "https://ecombackend.softprodigyphp.in/uploads/"

@@ -1,10 +1,41 @@
-import React from 'react';
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+import {getLogin} from '../../features/loginSlice/LoginSlice';
 const LoginPage = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const { isLogin } = useSelector((state) => state.login);
+  const handleLogin = () => {
+    if (!email) {
+      Alert.alert('Please enter your email');
+      return;
+    }
+    if (!password) {
+      Alert.alert('Please enter your password');
+      return;
+    }
+    dispatch(getLogin({email, password}));
+  };
+
+  // useEffect(()=>{
+  //   if(isLogin){
+  //     navigation.navigate('CategoryListing');
+  //   }
+  // },[isLogin])
+
   return (
     <>
       <LinearGradient
@@ -32,20 +63,29 @@ const LoginPage = ({navigation}) => {
           </View>
           <View style={styles.inputContainer}>
             <Fontisto name="email" size={30} style={styles.emailIcon} />
-            <TextInput style={styles.inputField} placeholder='Email' />
+            <TextInput
+              style={styles.inputField}
+              placeholder="Email"
+              onChangeText={email => setEmail(email)}
+            />
             <MaterialCommunityIcons
               name="lock-open-check-outline"
               size={30}
               style={styles.passwordsIcon}
             />
-            <TextInput placeholder='Password' style={styles.inputField} secureTextEntry={true} />
+            <TextInput
+              placeholder="Password"
+              style={styles.inputField}
+              secureTextEntry={true}
+              onChangeText={password => setPassword(password)}
+            />
           </View>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
             colors={['#efa248', '#f28346']}
             style={styles.buttonGradient}>
-            <Pressable>
+            <Pressable onPress={handleLogin}>
               <Text style={styles.buttonText}>Login</Text>
             </Pressable>
           </LinearGradient>
